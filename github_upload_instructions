@@ -1,0 +1,5 @@
+git init
+git add README.md
+git commit -m "prerelease upload"
+git remote add origin https://github.com/ds2643/mutcl.git
+git push -u origin master
