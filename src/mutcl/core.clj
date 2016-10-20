@@ -60,6 +60,11 @@
   [f b]
   (stochastic-tree-f-app f b))
 
+(defn mutate-src-file
+  [src-obj]
+  (let [src-tree (read-forms src-obj)]
+    (stochastic-tree-f-app #(mutate-branch rand-from-containing-set %) src-tree))
+
 (defn read-forms
   "read clojure src as programmic data"
   [file]
