@@ -1,8 +1,8 @@
 (ns mutcl.core
   (:gen-class)
   (:require [clojure.zip :as z]
-            [me.raynes.fs :as fs]
-            [clojure.string :as str]))
+            [clojure.string :as str]
+            [mutcl.filehandling :as fh]))
 
 (defn stochastic-tree-f-app [f tree]
   "apply function to an arbitrary node of an unbalanced, asymmetric tree, with equal probability of application of the function to all nodes in the tree"
