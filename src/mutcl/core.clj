@@ -60,11 +60,6 @@
   [f b]
   (stochastic-tree-f-app f b))
 
-(defn mutate-src-file
-  [src-obj]
-  (let [src-tree (read-forms src-obj)]
-    (stochastic-tree-f-app #(mutate-branch rand-from-containing-set %) src-tree))
-
 (defn read-forms
   "read clojure src as programmic data"
   [file]
@@ -75,6 +70,11 @@
         (if (= sentinel form)
           forms
           (recur (conj forms form)))))))
+
+(defn mutate-src-file
+  [src-obj]
+  (let [src-tree (read-forms src-obj)]
+    (stochastic-tree-f-app #(mutate-branch rand-from-containing-set %) src-tree)))
 
 (defn copy-file                                      ;; OK
   "copies a directory at specified path to destination path"
@@ -129,8 +129,8 @@
   "create souce backup for later reference"
   [src-temp-path src-obj-path]
   (do
-    (make-dir src-temp-name)
-    (copy-file src-obj-path src-temp-path))
+    (make-dir src-temp-path)
+    (copy-file src-obj-path src-temp-path)))
 
 (defn refresh-src
   [src-dir back-up-dir]
@@ -143,21 +143,23 @@
   n -> iterations"
   [proj-path n]
   (let [proj-obj (fs/absolute proj-path)
-        prog-name (fs/name proj-obj)
+        proj-name (fs/name proj-obj)
         clone-name (str proj-name "_clone")] ;; TODO: guarantee avoiding naming conflict
     (do
-        (copy-file proj-path clone-name) ;; copy project; original proj file spared of modification; all mutations performed on a clone
+      (copy-file proj-path clone-name)
+      ;; copy project; original proj file spared of modification; all mutations performed on a clone
         (let [clone-obj (fs/absolute clone-name)
               clone-src-obj (src-dir proj-name clone-name)
               src-temp-name "src_temp"]
           (do
             (create-src-backup src-temp-name clone-src-obj)
             (for [x (range n)]
-              (println "foo")
-              ;; mutate file contents
-              ;; run tests
-              ;; output data
-              (refresh-src clone-src-obj src-temp-name))
+              (do
+                (println "foo")
+                (let [rand-src-path (choose-rand-src-file clone-src-obj)]
+                  (overwrite-file rand-src-path (mutate-src-file rand-src-path)))
+                ;; run tests & output data
+                (refresh-src clone-src-obj src-temp-name)))
             (delete-file-recur src-temp-name)
             (delete-file-recur clone-obj))))))
 
