@@ -53,7 +53,7 @@
     (contains? eo-set item)  (another-one item eo-set)
     (contains? cnd-set item) (another-one item cnd-set)
     ;; TODO: contract motif-> necessary to find or write cond altern macro
-    :else nil)))
+    :else "FLAG"))) ;; TODO change "FLAG" to nil after repl testing
 
 (defn mutate-branch
   "given a Clojure program, return a copy(?) of the program for which a single node in the ast has been substituted with some substitution function"
@@ -87,6 +87,7 @@
   {:post (string? (slurp file-name))}
   (do
     (io/delete-file file-name)
+    (println cont-as-str)
     (spit file-name cont-as-str)))
 
 (defn project-src-files                             ;; OK
@@ -144,13 +145,13 @@
   [proj-path n]
   (let [proj-obj (fs/absolute proj-path)
         proj-name (fs/name proj-obj)
-        clone-name (str proj-name "_clone")] ;; TODO: guarantee avoiding naming conflict
+        clone-name (str proj-name "_CLONE")] ;; TODO: guarantee avoiding naming conflict
     (do
       (copy-file proj-path clone-name)
       ;; copy project; original proj file spared of modification; all mutations performed on a clone
         (let [clone-obj (fs/absolute clone-name)
               clone-src-obj (src-dir proj-name clone-name)
-              src-temp-name "src_temp"]
+              src-temp-name "SRC_TEMP"]
           (do
             (create-src-backup src-temp-name clone-src-obj)
             (for [x (range n)]
@@ -161,8 +162,10 @@
                 ;; run tests & output data
                 (refresh-src clone-src-obj src-temp-name)))
             (delete-file-recur src-temp-name)
-            (delete-file-recur clone-obj))))))
+            ;;(delete-file-recur clone-obj)
+            )))))
 
 (defn -main
   [& args]
-  (println "0"))
+  (println "0")
+  (i-shell "sample" 0))
