@@ -19,6 +19,7 @@
         z/root)))
 
 (def cloj-form-sets
+  "hard encoding of valid substitutions"
   {:arithmetic #{'+ '- '/ '*}
    :logic #{'or 'and}
    :comparison #{'> '< '<= '>=}
@@ -29,6 +30,32 @@
    :id #{'inc 'dec}
    :eo #{'even? 'odd?}})
 
+;; TODO: test ideas about behavior of set-sub-1 set-sub rand-from-containing-set
+(defn pick-rand-from-set
+  "pick another item from a set sx from which ix is a number"
+  [ix sx]
+  (rand-nth (filter (partial not= ix) (seq sx))))
+
+(defn set-sub-1
+  "helper recusive function to set-sub"
+  [syb set-keys form-sets]
+  (cond
+    (empty? set-keys)
+      nil ;; no match yields substitution with null value
+    (contains? (form-sets (first set-keys)) syb)
+      (pick-rand-from-set syb (first set-keys))
+    :else
+      (set-sub-1 syb (rest set-keys) form-sets)))
+
+(defn set-sub
+  "intended as more elegant replacement for rand-from-containing-set"
+  [syb form-sets]
+  (let
+    [set-keys (keys form-sets)]
+    (set-sub-1 syb set-keys)))
+
+
+;; note: refactoring rand-from-containing-set has added benefit of negating need for simult maintainence of let bindings with offerings of substituion dictionary
 (defn rand-from-containing-set
   "returns item randomly from containing set"
   [item]
@@ -52,8 +79,8 @@
     (contains? is-set item)  (another-one item is-set)
     (contains? eo-set item)  (another-one item eo-set)
     (contains? cnd-set item) (another-one item cnd-set)
-    ;; TODO: contract motif-> necessary to find or write cond altern macro
-    :else "FLAG"))) ;; TODO change "FLAG" to nil after repl testing
+    ;; TODO: contract motif-> necessary to find or write cond altern macro -> completed
+    :else "FLAG"))) ;; TODO change "FLAG" to nil after repl testing -> completed
 
 (defn mutate-branch
   "given a Clojure program, return a copy(?) of the program for which a single node in the ast has been substituted with some substitution function"
