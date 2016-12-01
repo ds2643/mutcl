@@ -75,7 +75,7 @@
 (defn mutate-src-file
   [src-obj]
   (let [src-tree (read-forms src-obj)]
-    (stochastic-tree-f-app #(mutate-branch rand-from-containing-set %) src-tree)))
+    (stochastic-tree-f-app #(mutate-branch set-sub %) src-tree)))
 
 (defn copy-file                                      ;; OK
   "copies a directory at specified path to destination path"
