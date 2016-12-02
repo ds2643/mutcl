@@ -6,15 +6,11 @@
   (:use [mutcl.alg :refer :all])
   (:import [java.io PushbackReader]))
 
-;; TODO test entire module
-;;   TODO inspect available f
-;;   TODO diagram (on paper) f composition
-;; UNITS
+;; TODO refactor
 ;;   mutate-branch
 ;;   read-forms
 ;;   mutate-src-file
-;;   copy-file
-;;   overwrite-file
+;;   copy-file                    X
 ;;   project-src-files
 ;;   src-dir
 ;;   choose-rand-src-file
@@ -23,6 +19,7 @@
 ;;   delete-file-recur
 ;;   create-src-backup
 ;;   refresh-src
+;;   ishell
 
 (defn mutate-branch
   "given a Clojure program, return a copy(?) of the program for which a single node in the ast has been substituted with some substitution function"
@@ -117,7 +114,6 @@
         clone-name (str proj-name "_CLONE")] ;; TODO: guarantee avoiding naming conflict
     (do
       (copy-file proj-path clone-name)
-      ;; copy project; original proj file spared of modification; all mutations performed on a clone
         (let [clone-obj (fs/absolute clone-name)
               clone-src-obj (src-dir proj-name clone-name)
               src-temp-name "SRC_TEMP"]
@@ -133,5 +129,3 @@
             (delete-file-recur src-temp-name)
             ;;(delete-file-recur clone-obj)
             )))))
-
-

@@ -7,5 +7,6 @@
 
 (defn -main
   [& args]
-  (println "0")
-  (i-shell "sample" 0))
+  (do
+  ;;(i-shell "sample" 0)
+    (println 0)))
