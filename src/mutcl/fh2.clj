@@ -3,7 +3,6 @@
             [me.raynes.fs :as fs]
             [clojure.java.io :as io]
             [clojure.edn :as edn]
-            [environ "0.5.0"]
             [environ.core :refer [env]])
   (:use [mutcl.alg :refer :all])
   (:import [java.io PushbackReader]))
@@ -33,7 +32,7 @@
       (gen-anon-file-name dir)
       possible-name)))
 
-;; TODO store this file in temporary directory
+;; TODO store this file in ~/temp
 (defn clone-project
   "returns file-object"
   [path]

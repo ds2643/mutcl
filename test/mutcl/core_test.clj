@@ -2,7 +2,8 @@
   (:require [me.raynes.fs :as fs]
             [clojure.test :refer :all]
             [mutcl.core :refer :all]
-            [midje.sweet :refer :all]))
+            [midje.sweet :refer :all]
+            [environ.core :refer [env]])))
 
 ;; mutcl.alg tests
 (deftest pick-rand-from-set-test
@@ -18,18 +19,19 @@
           (not (= 1 (set-sub 1 m)))))))
 
 ;; TODO mutcl.fh2 tests
-;; clone project
+;; TODO clone-project
+(comment
 (fact "`clone-project` copies a file, assigning an randomly generated name and returning a valid file object"
-  (let [temp '() ;; TODO temp directory here
+  (let [temp '(env :temp) ;; TODO temp directory here
         dir-cont (fs/list-dir temp)
         filename (str (gensym)) ;; TODO modify to eliminate namespace conflict
         test-dir (fs/mkdir (str temp "/" filename))
         clone-dir (clone-project test-dir)
-        result (fs/exists? clone)]
+        result (fs/exists? clone-dir)]
     (do
       (fs/delete test-dir)
       (fs/delete-dir clone-dir)
-      result)) => true)
+      result)) => true))
 
 (fact "`gen-file-name` generates a file-name string that does not conflict with others in the specified directory"
       (let [t (gen-file-name fs/*cwd*)])
