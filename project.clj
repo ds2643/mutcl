@@ -4,7 +4,9 @@
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.8.0"]
-                 [me.raynes/fs "1.4.6"]]
+                 [me.raynes/fs "1.4.6"]
+                 [environ "0.5.0"]]
+  :plugins [[lein-midje "3.1.3"]]
   :main ^:skip-aot mutcl.core
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all}})

@@ -2,15 +2,16 @@
   (:require [clojure.string :as str]
             [me.raynes.fs :as fs]
             [clojure.java.io :as io]
-            [clojure.edn :as edn])
+            [clojure.edn :as edn]
+            [environ "0.5.0"]
+            [environ.core :refer [env]])
   (:use [mutcl.alg :refer :all])
   (:import [java.io PushbackReader]))
 
-;; TODO refactor
+;; fh(1) functions:
 ;;   mutate-branch
 ;;   read-forms
 ;;   mutate-src-file
-;;   copy-file                    X
 ;;   project-src-files
 ;;   src-dir
 ;;   choose-rand-src-file
@@ -20,6 +21,29 @@
 ;;   create-src-backup
 ;;   refresh-src
 ;;   ishell
+
+(defn gen-file-name
+  "generate an name for a file in the specified directory such that no name space conflicts can occur"
+  [dir]
+  {:pre [(string? dir)
+         (fs/exists? (fs/absolute dir))]}
+  (let [dir-cont (fs/list-dir dir)
+        possible-name (gensym)]
+    (if (fs/exists? (fs/absolute (str path possible-name)))
+      (gen-anon-file-name dir)
+      possible-name)))
+
+;; TODO store this file in temporary directory
+(defn clone-project
+  "returns file-object"
+  [path]
+  {:pre [(string? path)
+         (fs/exists? (fs/absolute path))]} ;; exists
+  {:post }
+  (let [copy-name (generate-file-name fs/*cwd*)]
+    (do
+      (fs/copy-dir path copy-name)
+      (fs/absolute copy-name))))
 
 (comment ;; TODO implement these functions
 (defn clone-project "returns file-object" [path] nil)

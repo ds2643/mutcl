@@ -1,7 +1,10 @@
 (ns mutcl.core-test
-  (:require [clojure.test :refer :all]
-            [mutcl.core :refer :all]))
+  (:require [me.raynes.fs :as fs]
+            [clojure.test :refer :all]
+            [mutcl.core :refer :all]
+            [midje.sweet :refer :all]))
 
+;; mutcl.alg tests
 (deftest pick-rand-from-set-test
   (let [s #{1 3 5 7 9}]
     (is (not (= 1 (pick-rand-from-set 1 s))))))
@@ -13,4 +16,24 @@
     (is (and
           (or (= 2 (set-sub 1 m)) (= 3 (set-sub 1 m)))
           (not (= 1 (set-sub 1 m)))))))
-;; TODO:  test error handling behavior
+
+;; TODO mutcl.fh2 tests
+;; clone project
+(fact "`clone-project` copies a file, assigning an randomly generated name and returning a valid file object"
+  (let [temp '() ;; TODO temp directory here
+        dir-cont (fs/list-dir temp)
+        filename (str (gensym)) ;; TODO modify to eliminate namespace conflict
+        test-dir (fs/mkdir (str temp "/" filename))
+        clone-dir (clone-project test-dir)
+        result (fs/exists? clone)]
+    (do
+      (fs/delete test-dir)
+      (fs/delete-dir clone-dir)
+      result)) => true)
+
+(fact "`gen-file-name` generates a file-name string that does not conflict with others in the specified directory"
+      (let [t (gen-file-name fs/*cwd*)])
+      (fs/exists? t) => false
+      (string? t) => true)
+
+
