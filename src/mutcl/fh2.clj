@@ -35,48 +35,33 @@
   {:pre [(fs/exists? file-object)]}
   (fs/delete-dir file-object))
 
-(comment
+(defn restore-proj-clone
+  "restore project clone from source path"
+  [src-path clone-obj]
+  {:post [(= (.getName clone-obj) n)]}
+  (let [n (.getName clone-obj)]
+  (fs/copy-dir-into (io/file src-path) clone-obj)))
 
-;;
-;;  salvage:
-;;
-
-(defn project-src-files                             ;; OK
-  "return list of src file contents"
-  [project-name]
-  (filter #(and (.endsWith (.getName %) ".clj")
-                 not (.startsWith (.getName %) ".")))
-          (file-seq (io/file (str project-name "/src/" project-name))))
-
-(defn src-dir                                     ;; OK
- "returns lein project's source file directory object"
-  [project-name clone-name]
-  (io/file (str clone-name "/src/" project-name)))
-
-(defn choose-rand-src-file
-  [src-dir]
-  (rand-nth src-dir))
-;;
-
-(defn src-copy
-  "given reference to project file object, returns reference to source file-object"
+(defn list-src-file-obj
+  "given project file object, return sequence of source files as file-objects"
   [file-object]
-  {:post [(fs/childof? file-object src)]}
-  (let [src (fs/absolute ())])))
+  (let [all-files (.listFiles file-object)]
+    (filter #(and (.endsWith (.getName %) ".clj")
+                 not (.startsWith (.getName %) "project")) all-files)))
 
-(comment ;; TODO implement these functions
-(defn replace-src "replace mutated src file contents" [src-file-object dst-file-object] nil)
-)
+(defn perform-mutation tests
+  "print results of mutation tests to stdout"
+  [pc]
+  (let [src-files (list-src-file-obj pc)]
+      nil))
 
-(comment
 (defn conduct-tests
   "given project path and number of iterations, perform tests"
   [path n]
-  (let [pc (clone-project path) ;; project copy file object
-        sc (src-copy pc) ] ;; src copy file object
+  (let [pc (clone-project path)] ;; project copy file object
     (do
       (for [x (range n)]
-        ;; perform mutation tests
-        ;; (replace-src pc sc))
+        ;; (perform-mutation-tests pc)
+        ;; (restore-proj-clone path pc))
       (destroy-clone clone-path))))
-)
+

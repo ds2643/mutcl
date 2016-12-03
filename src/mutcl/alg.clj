@@ -2,8 +2,9 @@
   (:require [clojure.zip :as z]
             [clojure.string :as str]))
 
-(defn stochastic-tree-f-app [f tree]
+(defn stochastic-tree-f-app
   "apply function to an arbitrary node of an unbalanced, asymmetric tree, with equal probability of application of the function to all nodes in the tree"
+  [f tree]
   (let [zp    (z/zipper list? seq (fn [_ c] c) tree)
         nodes (->> (iterate z/next zp)
                    (take-while (complement z/end?))
@@ -42,7 +43,7 @@
       (set-sub-1 syb (rest set-keys) form-sets)))
 
 (defn set-sub
-  "intended as more elegant replacement for rand-from-containing-set"
+  "substitute symbol with another from key-value map of sets"
   [syb form-sets]
   (let
     [set-keys (keys form-sets)]

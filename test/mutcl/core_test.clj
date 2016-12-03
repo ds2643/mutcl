@@ -18,8 +18,6 @@
           (or (= 2 (set-sub 1 m)) (= 3 (set-sub 1 m)))
           (not (= 1 (set-sub 1 m)))))))
 
-;; TODO mutcl.fh2 tests
-
 (fact "`gen-file-name` generates a file-name string that does not conflict with others in the specified directory"
       (let [t (gen-file-name fs/*cwd*)])
       (fs/exists? t) => false
@@ -37,3 +35,4 @@
       (fs/delete-dir clone-dir)
       result)) => true))
 
+;; TODO untested: destroy-clone, restore-proj-clone, list-src-file-obj, perform-mutation-tests, conduct-tests
