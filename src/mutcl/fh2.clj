@@ -32,22 +32,31 @@
       (gen-anon-file-name dir)
       possible-name)))
 
-;; TODO store this file in ~/temp
 (defn clone-project
   "returns file-object"
   [path]
   {:pre [(string? path)
          (fs/exists? (fs/absolute path))]} ;; exists
   {:post }
-  (let [copy-name (generate-file-name fs/*cwd*)]
+  (let [copy-path (str "/tmp/" (generate-file-name "/tmp/"))]
     (do
-      (fs/copy-dir path copy-name)
-      (fs/absolute copy-name))))
+      (fs/copy-dir path copy-path)
+      (fs/absolute copy-path))))
+
+(defn destroy-clone
+  "deletes file-object and returns nil"
+  [file-object]
+  {:pre [(fs/exists? file-object)]}
+  (fs/delete-dir file-object))
+
+(defn src-copy
+  "given reference to project file object, returns reference to source file-object"
+  [file-object]
+  {}
+  {:post [(fs/childof? file-object src)]}
+  (let [src (fs/absolute ())]))
 
 (comment ;; TODO implement these functions
-(defn clone-project "returns file-object" [path] nil)
-(defn destroy-clone "returns nil" [path] nil)
-(defn src-copy "returns file-object" [file-object] nil) ;; TODO consider enclosing temporary directory -> not necessary just move file contents rather than file
 (defn replace-src "replace mutated src file contents" [src-file-object dst-file-object] nil)
 )
 
